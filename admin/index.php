@@ -1,6 +1,6 @@
 <?php
     /*
-	'软件名称：苹果CMS    官方网站：http://www.maccms.la/  源码库：https://github.com/magicblack
+	'软件名称：苹果CMS   源码库：https://github.com/magicblack
     '--------------------------------------------------------
     'Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
     '遵循Apache2开源协议发布，并提供免费使用。
@@ -29,7 +29,7 @@
     	chkLogin();
     }
     
-    $acs = array('vod','art','admin','user','make','collect','coll','system','extend','template','db','domain');
+    $acs = array('vod','art','admin','user','make','collect','coll','system','extend','template','db','domain','safety');
     
     if(in_array($ac,$acs)){
     	$plt = new Template(MAC_ADMIN."/tpl/html/");
@@ -44,6 +44,7 @@
     	$plt->set_var("MAC_URL",MAC_URL);
     	$plt->set_var("MAC_NAME",MAC_NAME);
     	$plt->set_var("MAC_RUNTIME",getRunTime());
+        $plt->set_var("MAC_TIME",time());
     	$plt->parse('mains', 'main');
     	$plt->p("mains");
     	

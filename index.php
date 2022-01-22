@@ -1,6 +1,6 @@
 <?php
 	/*
-	'软件名称：苹果CMS    官方网站：http://www.maccms.la/  源码库：https://github.com/magicblack
+	'软件名称：苹果CMS   源码库：https://github.com/magicblack
 	'--------------------------------------------------------
 	'Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 	'遵循Apache2开源协议发布，并提供免费使用。
@@ -18,7 +18,7 @@
     
     if(empty($ac)){ $ac='vod'; $method='index'; }
     
-    $col_num = array('id','pg','year','type','typeid','class','classid','src','level','num','aid','vid','uid');
+    $col_num = array('id','pg','year','type','typeid','class','classid','src','level','num','aid','vid','uid','maxpage');
     $col_str = array('wd','ids','pinyin','area','lang','letter','starring','directed','tag','order','by','flag','clear','ref','s','t');
     if($parlen>=2){
     	$method = $par[1];

@@ -58,7 +58,6 @@ class AppTpl
 	    		}
 	    		$strpg='';
 	    		$colarr=array('pg','wd','year','starring','directed','pinyin','letter','ids','area','lang','tag','typeid','classid','order','by');
-	    		
 	    		$valarr=array();
 	    		foreach($colarr as $k=>$v){
 	    			$c = $colarr[$k];
@@ -90,13 +89,11 @@ class AppTpl
 					$str = $r;
 				}
 				$colarr = array('{id}','{pg}','{order}','{by}','{class}','{year}','{letter}','{area}','{lang}');
-				$valarr = array('id'=>$this->P['id'],'pg'=>'1','order'=>$this->P['order'],'by'=>$this->P['by'],'class'=>$this->P['class'],'year'=>$this->P['year'],'letter'=>$this->P['letter'],'area'=>$this->P['area'],'lang'=>$this->P['lang']);
+				$valarr = array('id'=>$this->P['id'],'pg'=>'1','order'=>$this->P['order'],'by'=>$this->P['by'],'class'=>urlencode($this->P['class']),'year'=>urlencode($this->P['year']),'letter'=>urlencode($this->P['letter']),'area'=>urlencode($this->P['area']),'lang'=>urlencode($this->P['lang']));
 				foreach($d as $k=>$v){
-					$valarr[$k]=$v;
+					$valarr[$k]= $v;
 				}
-				
 				$str=str_replace($colarr,$valarr,$str);
-				
 	    		break;
 	    	case 'type':
 	    		$str = $is.'?m='.$f.'-type-id-'.$t['t_id'];
@@ -990,9 +987,7 @@ class AppTpl
 			//exit;
 		}
 	}
-    
-    
-    
+
     function ifex()
     {
         if (!strpos(",".$this->H,"{if-")) { return; }
@@ -2187,8 +2182,14 @@ class AppTpl
         	
         }
         else{
-        	$order = $this->P['order']=='' ? 'desc' : $this->P['order'];
-			$by = $this->P['by']=='' ? 'time' : $this->P['by'];
+            if(!in_array($this->P['order'],['desc','asc'])){
+                $this->P['order']='desc';
+            }
+        	$order = $this->P['order'];
+            if(!in_array($this->P['by'],['time','hits','score'])){
+                $this->P['by']=='time' ;
+            }
+			$by = $this->P['by'];
 			
 			$linkorderasc = $this->getLink($flag,'list',$this->T,array('pg'=>1,'order'=>'asc'));
 			$linkorderdesc = $this->getLink($flag,'list',$this->T,array('pg'=>1,'order'=>'desc'));
@@ -2203,14 +2204,19 @@ class AppTpl
         	$linkarea = $this->getLink($flag,'list',$this->T,array('pg'=>1,'area'=>''));
         	$linklang = $this->getLink($flag,'list',$this->T,array('pg'=>1,'lang'=>''));
         	$linkclass = $this->getLink($flag,'list',$this->T,array('pg'=>1,'class'=>''));
-        	
+
+
+            $cp = $this->P;
+            if(!empty($GLOBALS['MAC']['app']['wallfilter'])){
+                $cp = mac_escape_param($cp);
+            }
+
         	$col=array('{page:area}','{page:year}','{page:class}','{page:classname}','{page:lang}','{page:letter}','{page:areaencode}','{page:langencode}','{page:linkyear}','{page:linkletter}','{page:linkarea}','{page:linklang}','{page:linkclass}');
-        	
         	$classid = $this->P['class']==0?'':$this->P['class'];
         	$classname =  $GLOBALS['MAC_CACHE']['vodclass'][$classid]['c_name'];
-        	$val=array($this->P['area'],$this->P['year']==0?'':$this->P['year'],$classid,$classname,$this->P['lang'],$this->P['letter'],urlencode($this->P['area']),urlencode($this->P['lang']),$linkyear,$linkletter,$linkarea,$linklang,$linkclass);
-        	
-        	$colarr=array_merge($colarr,$col);
+            $val=array($cp['area'],$cp['year']==0?'':$cp['year'],$classid,$classname,$cp['lang'],$cp['letter'],urlencode($cp['area']),urlencode($cp['lang']),$linkyear,$linkletter,$linkarea,$linklang,$linkclass);
+
+            $colarr=array_merge($colarr,$col);
         	$valarr=array_merge($valarr,$val);
         	unset($col);
         	unset($val);
@@ -2394,6 +2400,14 @@ class AppTpl
 			$this->H = str_replace($matches2[0][$j], $marktemp,$this->H);
 		}
 		unset($matches2);
+    }
+
+    function loadVerify($type)
+    {
+        $this->H = loadFile(MAC_ROOT_TEMPLATE."/home_verify.html");
+        $this->H = str_replace("{type}",$type,$this->H);
+        $this->base();
+        echo $this->H;
     }
 }
 $tpl = new AppTpl();

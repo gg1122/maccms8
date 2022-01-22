@@ -615,7 +615,8 @@ elseif($method=='player')
 		return;
 	}
 	$plt->set_if('main','isnull',false);
-	
+
+
 	$rn='player';
 	$plt->set_block('main', 'list_'.$rn, 'rows_'.$rn);
 	$colarr=array('status','sort','from','show','des','ps','parse','tip');
@@ -642,6 +643,9 @@ elseif($method=='player')
 		}
 		$plt->parse('rows_'.$rn,'list_'.$rn,true);
 	}
+
+    $_SESSION['__token__'] = md5(getRndStr(16));
+    $plt->set_var('__token__', $_SESSION['__token__'] );
 	unset($xmlnode);
     unset($nodes);
     unset($doc);
@@ -659,7 +663,6 @@ elseif($method=='playerup')
 		$play[$iar[1][$m]] = $iar[2][$m];
 	}
 	unset($iar);
-	
 	
 	if($play['from']!=''){
 		$xp = '../inc/config/vodplay.xml';
@@ -685,6 +688,7 @@ elseif($method=='playerup')
 		$play['backurl'] = 'index.php?m=vod-player';
 		$sHtml = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head>	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">	<title导入播放器代码</title></head>';
 		$sHtml .= "<form id='formsubmit' name='formsubmit' action='admin_xml.php?ac=savexml' method='post'>";
+        $sHtml.= "<input type='hidden' name='__token__' value='".$_POST['__token__']."'/>";
 		foreach($play as $k=>$v){
             $sHtml.= "<input type='hidden' name='".$k."' value='".$v."'/>";
         }
@@ -1037,7 +1041,7 @@ elseif($method=='list')
 	$type=$p['type']; if(empty($type)){ $type=999; } else { $type=intval($type); }
 	$topic=$p['topic']; if(empty($topic)){ $topic=999; } else { $topic=intval($topic); }
 	$level=$p['level']; if(empty($level)){ $level=999; } else { $level=intval($level); }
-	$hide=$p['hide']; if(empty($hide)){ $hide=999; } else { $hide=intval($hide); }
+	$hide=$p['hide']; if($hide==''){ $hide=999; } else { $hide=intval($hide); }
 	$lock=$p['lock']; if(empty($lock)){ $lock=999; } else { $lock=intval($lock); }
 	$state=$p['state']; if(empty($state)){ $state=999; } else { $state=intval($state); }
 	$pic=$p['pic']; if(empty($pic)){ $pic=999; } else { $pic=intval($pic); }
